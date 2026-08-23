@@ -1,11 +1,753 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus-Android</title>
-    </head>
-    <body>
-        <h1>PakePlus-Android</h1>
-    </body>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>湖北龙王垭生态旅游发展有限公司‑管理后台系统 | ERP服务商：湖南长滨科技有限公司</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .page-content { display: none; }
+        .page-content.active { display: block; }
+        .sidebar-active { @apply bg-primary/10 text-primary border-l-4 border-primary; }
+        .row-hidden { display: none; }
+        .row-bold { @apply font-bold bg-gray-100; }
+    </style>
+</head>
+<body class="bg-gray-100 text-dark">
+<div class="flex h-screen overflow-hidden">
+    <!-- 侧边栏 -->
+    <aside class="w-60 bg-white shadow-md flex-shrink-0 hidden md:block overflow-y-auto">
+        <div class="h-16 flex items-center justify-center border-b text-xl font-bold text-primary">
+            <i class="fa fa-hotel mr-2"></i>龙王垭酒店后台
+        </div>
+        <nav class="p-3">
+            <!-- 数据看板按钮已删除 -->
+            <a href="#" data-page="roomManage" class="menu-item flex items-center px-4 py-3 rounded hover:bg-gray-100 mb-1"><i class="fa fa-bed w-6"></i>住宿管理</a>
+            <a href="#" data-page="foodManage" class="menu-item flex items-center px-4 py-3 rounded hover:bg-gray-100 mb-1"><i class="fa fa-cutlery w-6"></i>餐饮管理</a>
+            <a href="#" data-page="orderList" class="menu-item flex items-center px-4 py-3 rounded hover:bg-gray-100 mb-1"><i class="fa fa-list-alt w-6"></i>订单列表</a>
+            <a href="#" data-page="roomConfig" class="menu-item flex items-center px-4 py-3 rounded hover:bg-gray-100 mb-1"><i class="fa fa-key w-6"></i>客房管理</a>
+            <a href="#" data-page="foodConfig" class="menu-item flex items-center px-4 py-3 rounded hover:bg-gray-100 mb-1"><i class="fa fa-coffee w-6"></i>菜品管理</a>
+            <a href="#" data-page="report" class="menu-item sidebar-active flex items-center px-4 py-3 rounded mb-1"><i class="fa fa-bar-chart w-6"></i>营收报表</a>
+            <a href="#" data-page="setting" class="menu-item flex items-center px-4 py-3 rounded hover:bg-gray-100 mb-1"><i class="fa fa-cog w-6"></i>系统设置</a>
+        </nav>
+        <div class="mt-6 p-3 text-xs text-gray-500 border-t">ERP系统服务商：<br/>湖南长滨科技有限公司</div>
+    </aside>
+    <!-- 主内容区 -->
+    <main class="flex-1 overflow-y-auto">
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 sticky top-0">
+            <div id="pageTitle" class="font-semibold">营收报表</div>
+            <div class="flex items-center gap-4">
+                <span id="todayDate"></span>
+                <div class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center">A</div>
+            </div>
+        </header>
+        <div class="p-6">
+            <!-- 【1】数据看板页面已删除 -->
+
+            <!-- 【2】住宿管理页面 -->
+            <div id="page-roomManage" class="page-content">
+                <div class="bg-white rounded-xl shadow p-5 mb-5">
+                    <div class="flex flex-wrap gap-4 items-end mb-5">
+                        <div>
+                            <label class="block text-sm mb-1">房间号</label>
+                            <input type="text" class="border px-3 py-2 rounded w-40" placeholder="输入房间号">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">入住状态</label>
+                            <select class="border px-3 py-2 rounded w-40">
+                                <option>全部</option>
+                                <option>已入住</option>
+                                <option>空房</option>
+                                <option>预定</option>
+                                <option>维修</option>
+                            </select>
+                        </div>
+                        <button class="bg-primary text-white px-5 py-2 rounded">查询</button>
+                        <button class="bg-success text-white px-5 py-2 rounded">新增入住</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b">
+                                    <th class="border py-2 px-2 text-left">房间号</th>
+                                    <th class="border py-2 px-2 text-left">客人姓名</th>
+                                    <th class="border py-2 px-2 text-left">入住日期</th>
+                                    <th class="border py-2 px-2 text-left">退房日期</th>
+                                    <th class="border py-2 px-2 text-left">房价</th>
+                                    <th class="border py-2 px-2 text-left">状态</th>
+                                    <th class="border py-2 px-2 text-left">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomManageTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【3】餐饮管理页面 -->
+            <div id="page-foodManage" class="page-content">
+                <div class="bg-white rounded-xl shadow p-5 mb-5">
+                    <div class="flex flex-wrap gap-4 items-end mb-5">
+                        <div>
+                            <label class="block text-sm mb-1">餐台编号</label>
+                            <input type="text" class="border px-3 py-2 rounded w-40" placeholder="餐台号">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">订单状态</label>
+                            <select class="border px-3 py-2 rounded w-40">
+                                <option>全部</option>
+                                <option>开台</option>
+                                <option>已结账</option>
+                                <option>已取消</option>
+                            </select>
+                        </div>
+                        <button class="bg-primary text-white px-5 py-2 rounded">查询</button>
+                        <button class="bg-success text-white px-5 py-2 rounded">新建餐单</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b">
+                                    <th class="border py-2 px-2 text-left">单号</th>
+                                    <th class="border py-2 px-2 text-left">餐台</th>
+                                    <th class="border py-2 px-2 text-left">开单时间</th>
+                                    <th class="border py-2 px-2 text-left">消费金额</th>
+                                    <th class="border py-2 px-2 text-left">状态</th>
+                                    <th class="border py-2 px-2 text-left">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="foodManageTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【4】订单列表页面 -->
+            <div id="page-orderList" class="page-content">
+                <div class="bg-white rounded-xl shadow p-5 mb-5">
+                    <div class="flex flex-wrap gap-4 items-end mb-5">
+                        <div>
+                            <label class="block text-sm mb-1">订单类型</label>
+                            <select class="border px-3 py-2 rounded w-40">
+                                <option>全部订单</option>
+                                <option>住宿订单</option>
+                                <option>餐饮订单</option>
+                                <option>其他消费</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">开始日期</label>
+                            <input type="date" class="border px-3 py-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">结束日期</label>
+                            <input type="date" class="border px-3 py-2 rounded">
+                        </div>
+                        <button class="bg-primary text-white px-5 py-2 rounded">查询订单</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b">
+                                    <th class="border py-2 px-2 text-left">订单编号</th>
+                                    <th class="border py-2 px-2 text-left">类型</th>
+                                    <th class="border py-2 px-2 text-left">客户名称</th>
+                                    <th class="border py-2 px-2 text-left">下单时间</th>
+                                    <th class="border py-2 px-2 text-left">金额</th>
+                                    <th class="border py-2 px-2 text-left">支付状态</th>
+                                    <th class="border py-2 px-2 text-left">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderListTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【5】客房管理页面 -->
+            <div id="page-roomConfig" class="page-content">
+                <div class="bg-white rounded-xl shadow p-5 mb-5">
+                    <div class="flex flex-wrap gap-4 items-end mb-5">
+                        <div>
+                            <label class="block text-sm mb-1">房型筛选</label>
+                            <select class="border px-3 py-2 rounded w-40">
+                                <option>全部房型</option>
+                                <option>标准单间</option>
+                                <option>标准双人间</option>
+                                <option>豪华套房</option>
+                                <option>钟点房</option>
+                            </select>
+                        </div>
+                        <button class="bg-primary text-white px-5 py-2 rounded">查询</button>
+                        <button class="bg-success text-white px-5 py-2 rounded">新增客房</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b">
+                                    <th class="border py-2 px-2 text-left">房间号</th>
+                                    <th class="border py-2 px-2 text-left">楼层</th>
+                                    <th class="border py-2 px-2 text-left">房型</th>
+                                    <th class="border py-2 px-2 text-left">挂牌价</th>
+                                    <th class="border py-2 px-2 text-left">房间状态</th>
+                                    <th class="border py-2 px-2 text-left">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomConfigTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【6】菜品管理页面 -->
+            <div id="page-foodConfig" class="page-content">
+                <div class="bg-white rounded-xl shadow p-5 mb-5">
+                    <div class="flex flex-wrap gap-4 items-end mb-5">
+                        <div>
+                            <label class="block text-sm mb-1">菜品分类</label>
+                            <select class="border px-3 py-2 rounded w-40">
+                                <option>全部菜品</option>
+                                <option>热菜</option>
+                                <option>凉菜</option>
+                                <option>酒水饮料</option>
+                                <option>主食</option>
+                            </select>
+                        </div>
+                        <button class="bg-primary text-white px-5 py-2 rounded">查询</button>
+                        <button class="bg-success text-white px-5 py-2 rounded">新增菜品</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 border-b">
+                                    <th class="border py-2 px-2 text-left">菜品名称</th>
+                                    <th class="border py-2 px-2 text-left">分类</th>
+                                    <th class="border py-2 px-2 text-left">售价</th>
+                                    <th class="border py-2 px-2 text-left">状态</th>
+                                    <th class="border py-2 px-2 text-left">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="foodConfigTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【7】营收报表（原有页面完全原样保留，房费、餐饮、其他加粗） -->
+            <div id="page-report" class="page-content active">
+                <div class="bg-white rounded-xl shadow p-5 mb-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-blue-50 rounded-lg p-4 flex items-center justify-between">
+                            <div><p class="text-sm text-gray-600">住宿营收</p><p class="text-2xl font-bold text-primary" id="statRoom">¥ 0.00</p></div>
+                            <i class="fa fa-bed text-3xl text-blue-200"></i>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4 flex items-center justify-between">
+                            <div><p class="text-sm text-gray-600">餐饮营收</p><p class="text-2xl font-bold text-success" id="statFood">¥ 0.00</p></div>
+                            <i class="fa fa-cutlery text-3xl text-green-200"></i>
+                        </div>
+                        <div class="bg-orange-50 rounded-lg p-4 flex items-center justify-between">
+                            <div><p class="text-sm text-gray-600">其他营收</p><p class="text-2xl font-bold text-warning" id="statOther">¥ 0.00</p></div>
+                            <i class="fa fa-money text-3xl text-orange-200"></i>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4 items-end border-t pt-5">
+                        <div><label class="block text-sm font-medium mb-1">查询模式</label><select id="queryMode" class="border px-3 py-2 rounded w-40"><option value="day">按单日查询</option><option value="month">按整个月份查询</option></select></div>
+                        <div><label class="block text-sm font-medium mb-1">选择日期</label><input id="selDate" type="date" class="border px-3 py-2 rounded"></div>
+                        <div><label class="block text-sm font-medium mb-1">报表类型</label><select id="reportType" class="border px-3 py-2 rounded w-48"><option value="all">全部营收明细</option><option value="room">仅住宿明细</option><option value="food">仅餐饮明细</option></select></div>
+                        <button id="btnQuery" class="bg-primary text-white px-5 py-2 rounded hover:bg-blue-700 transition"><i class="fa fa-search mr-1"></i>查询报表</button>
+                        <button id="btnExport" class="bg-success text-white px-5 py-2 rounded hover:bg-green-600 transition"><i class="fa fa-download mr-1"></i>导出Excel</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 id="reportTitle" class="font-semibold text-lg">湖北龙王垭生态旅游发展有限公司‑稽核底表</h3>
+                        <span class="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">ERP服务商：湖南长滨科技有限公司</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                            <thead><tr class="border-b bg-gray-50"><th class="text-left py-3 px-2 border">项目</th><th class="text-left py-3 px-2 border">主营</th><th class="text-left py-3 px-2 border">食品</th><th class="text-left py-3 px-2 border">酒水</th><th class="text-left py-3 px-2 border">香烟</th><th class="text-left py-3 px-2 border">会议</th><th class="text-left py-3 px-2 border">其他</th><th class="text-left py-3 px-2 border">饮料</th><th class="text-left py-3 px-2 border">合计</th></tr></thead>
+                            <tbody id="reportTableBody">
+                                <tr data-type="room" class="border-b row-bold bg-gray-50"><td class="py-3 px-2 border font-bold">房费</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="room" class="border-b"><td class="py-3 px-2 border">夜审房费</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="room" class="border-b"><td class="py-3 px-2 border">全天房费</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="room" class="border-b"><td class="py-3 px-2 border">半天房费</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="room" class="border-b"><td class="py-3 px-2 border">钟点房费</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="food" class="border-b row-bold bg-gray-50"><td class="py-3 px-2 border font-bold">餐饮</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="food" class="border-b"><td class="py-3 px-2 border">宴会厅</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="food" class="border-b"><td class="py-3 px-2 border">包厢</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="food" class="border-b"><td class="py-3 px-2 border">会所</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="other" class="border-b row-bold bg-gray-50"><td class="py-3 px-2 border font-bold">其他</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr data-type="all" class="border-b row-bold bg-blue-50"><td class="py-3 px-2 border">营业收入合计</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td><td class="py-3 px-2 border">0.00</td></tr>
+                                <tr><td colspan="9" class="py-3 px-2 border text-xs text-gray-500 text-center">ERP系统服务商：湖南长滨科技有限公司</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 【8】系统设置页面 -->
+            <div id="page-setting" class="page-content">
+                <div class="bg-white rounded-xl shadow p-5 max-w-2xl">
+                    <h3 class="font-semibold text-lg mb-5">基础系统设置</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm mb-1">酒店名称</label>
+                            <input type="text" value="湖北龙王垭生态旅游发展有限公司" class="border w-full px-3 py-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">联系电话</label>
+                            <input type="text" class="border w-full px-3 py-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">营业开始时间</label>
+                            <input type="time" value="08:00" class="border px-3 py-2 rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm mb-1">营业结束时间</label>
+                            <input type="time" value="22:00" class="border px-3 py-2 rounded">
+                        </div>
+                        <button class="bg-primary text-white px-6 py-2 rounded mt-3">保存配置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    // ============================================================
+    // 1. 侧边菜单切换
+    // ============================================================
+    const menuItems = document.querySelectorAll('.menu-item');
+    const pageContents = document.querySelectorAll('.page-content');
+    const pageTitle = document.getElementById('pageTitle');
+    function switchPage(pageId) {
+        pageContents.forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + pageId);
+        if (target) target.classList.add('active');
+        const menuMap = { 'roomManage':'住宿管理','foodManage':'餐饮管理','orderList':'订单列表','roomConfig':'客房管理','foodConfig':'菜品管理','report':'营收报表','setting':'系统设置' };
+        pageTitle.innerText = menuMap[pageId] || pageId;
+        menuItems.forEach(m => m.classList.remove('sidebar-active'));
+        const activeMenu = Array.from(menuItems).find(m => m.dataset.page === pageId);
+        if (activeMenu) activeMenu.classList.add('sidebar-active');
+    }
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            switchPage(this.dataset.page);
+        });
+    });
+
+    // ========== 固定历史月份数据仓库 ==========
+    const fixedMonthData = {
+        "2025-07":{
+            room:"265047.00",
+            food:"1010493.00",
+            other:"1710256.00"
+        },
+        "2026-07":{
+            room:"1215329.00",
+            food:"1436365.00",
+            other:"666357.00"
+        }
+    };
+
+    // ============================================================
+    // 2. 报表功能
+    // ============================================================
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    document.getElementById('todayDate').innerText = now.toLocaleDateString();
+    const dateInput = document.getElementById('selDate');
+    dateInput.max = todayStr;
+    dateInput.value = todayStr;
+
+    // 基于日期生成确定性伪随机数
+    function seededRandom(seedStr) {
+        let hash = 0;
+        for (let i = 0; i < seedStr.length; i++) {
+            hash = ((hash << 5) - hash) + seedStr.charCodeAt(i);
+            hash |= 0;
+        }
+        const x = Math.sin(hash) * 10000;
+        return x - Math.floor(x);
+    }
+
+    // 获取营收数据
+    function getRevenueData(mode, selectedDate) {
+        const d = new Date(selectedDate);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+        const day = d.getDate();
+        const ymKey = `${y}-${String(m).padStart(2,'0')}`;
+
+        // 如果是整月查询，并且该月份存在固定历史数据，直接返回固定值，不再随机
+        if(mode === 'month' && fixedMonthData[ymKey]){
+            return fixedMonthData[ymKey];
+        }
+
+        if (mode === 'day') {
+            const seed = `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            const rand = seededRandom(seed);
+            // 修改：单日总额区间 60000‑120000
+            const totalSales = 60000 + rand * (120000 - 60000);
+            
+            const roomRatio = 0.35 + seededRandom(seed + '_room') * 0.2;
+            const foodRatio = 0.3 + seededRandom(seed + '_food') * 0.2;
+            const otherRatio = 1 - roomRatio - foodRatio;
+
+            return {
+                room: (totalSales * roomRatio).toFixed(2),
+                food: (totalSales * foodRatio).toFixed(2),
+                other: (totalSales * otherRatio).toFixed(2)
+            };
+        } else {
+            // 其它月份自动累加每一天
+            const daysInMonth = new Date(y, m, 0).getDate();
+            let monthRoom = 0, monthFood = 0, monthOther = 0;
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                const daySeed = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                const rand = seededRandom(daySeed);
+                const totalSales = 60000 + rand * (120000 - 60000);
+                const roomRatio = 0.35 + seededRandom(daySeed + '_room') * 0.2;
+                const foodRatio = 0.3 + seededRandom(daySeed + '_food') * 0.2;
+                const otherRatio = 1 - roomRatio - foodRatio;
+                
+                monthRoom += totalSales * roomRatio;
+                monthFood += totalSales * foodRatio;
+                monthOther += totalSales * otherRatio;
+            }
+
+            return {
+                room: monthRoom.toFixed(2),
+                food: monthFood.toFixed(2),
+                other: monthOther.toFixed(2)
+            };
+        }
+    }
+    // 计算行合计
+    function calcRowSum(row) {
+        let sum = 0;
+        for (let i = 1; i <= 7; i++) {
+            if (row.cells[i]) {
+                sum += Number(parseFloat(row.cells[i].innerText).toFixed(2)) || 0;
+            }
+        }
+        if (row.cells[8]) row.cells[8].innerText = sum.toFixed(2);
+    }
+    function updateStatCards(room, food, other) {
+        document.getElementById('statRoom').innerText = `¥ ${room}`;
+        document.getElementById('statFood').innerText = `¥ ${food}`;
+        document.getElementById('statOther').innerText = `¥ ${other}`;
+    }
+    function queryReport() {
+        const mode = document.getElementById('queryMode').value;
+        const selDate = document.getElementById('selDate').value;
+        const rType = document.getElementById('reportType').value;
+        if (!selDate) { alert('请选择日期'); return; }
+        if (new Date(selDate) > new Date(todayStr)) { alert('不可查询未来日期'); return; }
+        if (new Date(selDate) < new Date('2025-01-01')) { alert('最早只能查询2025-01-01之后的数据'); return; }
+        const data = getRevenueData(mode, selDate);
+        const rows = document.querySelectorAll('#reportTableBody tr');
+        // 重置所有数值单元格
+        rows.forEach(row => {
+            for (let i = 1; i <= 8; i++) {
+                if (row.cells[i]) row.cells[i].innerText = '0.00';
+            }
+        });
+        // 填充住宿行
+        if (rType === 'all' || rType === 'room') {
+            if (rows[0] && rows[0].cells[1]) rows[0].cells[1].innerText = data.room;
+            if (rows[1] && rows[1].cells[1]) rows[1].cells[1].innerText = (parseFloat(data.room) * 0.98).toFixed(2);
+            if (rows[2] && rows[2].cells[1]) rows[2].cells[1].innerText = (parseFloat(data.room) * 0.018).toFixed(2);
+            if (rows[3] && rows[3].cells[1]) rows[3].cells[1].innerText = (parseFloat(data.room) * 0.0017).toFixed(2);
+            if (rows[4] && rows[4].cells[1]) rows[4].cells[1].innerText = (parseFloat(data.room) * 0.0003).toFixed(2);
+        }
+        // 填充餐饮行
+        if (rType === 'all' || rType === 'food') {
+            if (rows[5] && rows[5].cells[2]) rows[5].cells[2].innerText = data.food;
+            if (rows[6] && rows[6].cells[2]) rows[6].cells[2].innerText = (parseFloat(data.food) * 0.065).toFixed(2);
+            if (rows[7] && rows[7].cells[2]) rows[7].cells[2].innerText = (parseFloat(data.food) * 0.82).toFixed(2);
+            if (rows[8] && rows[8].cells[2]) rows[8].cells[2].innerText = (parseFloat(data.food) * 0.115).toFixed(2);
+        }
+        // 填充其他行
+        if (rType === 'all') {
+            if (rows[9] && rows[9].cells[6]) rows[9].cells[6].innerText = data.other;
+        }
+        // 合计行
+        if (rows[10] && rows[10].cells[1]) rows[10].cells[1].innerText = parseFloat(data.room).toFixed(2);
+        if (rows[10] && rows[10].cells[2]) rows[10].cells[2].innerText = parseFloat(data.food).toFixed(2);
+        if (rows[10] && rows[10].cells[6]) rows[10].cells[6].innerText = parseFloat(data.other).toFixed(2);
+        // 计算每行合计
+        rows.forEach(row => {
+            if (!row.classList.contains('row-hidden') && row.cells.length > 1) {
+                calcRowSum(row);
+            }
+        });
+        // 行显隐
+        rows.forEach(row => {
+            const t = row.dataset.type;
+            if (rType === 'all') row.classList.remove('row-hidden');
+            else if (t === 'all' || t === rType) row.classList.remove('row-hidden');
+            else row.classList.add('row-hidden');
+        });
+        updateStatCards(data.room, data.food, data.other);
+        const titleEl = document.getElementById('reportTitle');
+        if (mode === 'day') {
+            titleEl.innerText = `湖北龙王垭生态旅游发展有限公司‑稽核底表‑单日【${selDate}】`;
+        } else {
+            const y = selDate.split('-')[0], m = selDate.split('-')[1];
+            titleEl.innerText = `湖北龙王垭生态旅游发展有限公司‑稽核底表‑月份【${y}年${m}月】`;
+        }
+    }
+    function exportExcel() {
+        const selDate = document.getElementById('selDate').value;
+        const mode = document.getElementById('queryMode').value;
+        if (!selDate) { alert('请先查询报表'); return; }
+        const fileName = mode === 'day' ? `龙王垭营收报表_单日_${selDate}.csv` : `龙王垭营收报表_${selDate.split('-')[0]}年${selDate.split('-')[1]}月.csv`;
+        let csvContent = '\uFEFF项目,主营,食品,酒水,香烟,会议,其他,饮料,合计\n';
+        const rowList = Array.from(document.querySelectorAll('#reportTableBody tr:not(.row-hidden)'));
+        rowList.slice(0, -1).forEach(row => {
+            const arr = [];
+            row.querySelectorAll('td').forEach(td => arr.push(td.innerText));
+            csvContent += arr.join(',') + '\n';
+        });
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // 初始化看板图表
+    function initChart(){
+        const ctx = document.getElementById('incomeChart').getContext('2d');
+        new Chart(ctx,{
+            type:'line',
+            data:{
+                labels:['8‑16','8‑17','8‑18','8‑19','8‑20','8‑21','8‑22'],
+                datasets:[{
+                    label:'每日营收',
+                    data:[72000,81000,69500,93000,88200,97600,86520],
+                    borderColor:'#165DFF',
+                    tension:0.3
+                }]
+            }
+        })
+    }
+
+    // ============================================================
+    // 3. 填充各管理表格数据
+    // ============================================================
+    function formatDate(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth()+1).padStart(2,'0');
+        const day = String(d.getDate()).padStart(2,'0');
+        return `${y}-${m}-${day}`;
+    }
+
+    // 3.1 住宿管理 - 18条数据，客人姓名用姓氏+**
+    function fillRoomManage() {
+        const tbody = document.getElementById('roomManageTbody');
+        if (!tbody) return;
+        const roomNumbers = ['201','202','203','205','206','301','302','303','305','306','401','402','403','501','502','601','602','603'];
+        const surnames = ['张','李','王','刘','陈','杨','赵','黄','周','吴','徐','孙','马','朱','胡','郭','何','林'];
+        const statuses = ['已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','已入住','预定','预定','预定'];
+        let html = '';
+        for (let i = 0; i < 18; i++) {
+            const checkIn = new Date('2026-08-20');
+            checkIn.setDate(checkIn.getDate() + Math.floor(i/3)); // 18条分布在几天
+            const checkOut = new Date(checkIn);
+            checkOut.setDate(checkOut.getDate() + 2 + Math.floor(Math.random()*3));
+            const price = (200 + Math.floor(Math.random()*300)).toFixed(2);
+            const name = surnames[i] + '**';
+            const status = statuses[i] || '已入住';
+            const statusClass = status === '已入住' ? 'text-success' : status === '预定' ? 'text-warning' : '';
+            html += `<tr>
+                <td class="border py-2 px-2">${roomNumbers[i]}</td>
+                <td class="border py-2 px-2">${name}</td>
+                <td class="border py-2 px-2">${formatDate(checkIn)}</td>
+                <td class="border py-2 px-2">${formatDate(checkOut)}</td>
+                <td class="border py-2 px-2">¥${price}</td>
+                <td class="border py-2 px-2 ${statusClass}">${status}</td>
+                <td class="border py-2 px-2"><a href="#" class="text-primary mr-3">编辑</a><a href="#" class="text-danger">退房</a></td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+    }
+
+    // 3.2 餐饮管理 - 30条数据
+    function fillFoodManage() {
+        const tbody = document.getElementById('foodManageTbody');
+        if (!tbody) return;
+        const tables = ['大厅-01','大厅-02','大厅-03','大厅-04','大厅-05','大厅-06','大厅-07','大厅-08','大厅-09','大厅-10','包厢-01','包厢-02','包厢-03','包厢-04','包厢-05','包厢-06','包厢-07','包厢-08','包厢-09','包厢-10','宴会厅-1','宴会厅-2','宴会厅-3','宴会厅-4','宴会厅-5','露台-01','露台-02','露台-03','露台-04','露台-05'];
+        const statuses = ['开台','已结账','已结账','已结账','已结账','已结账','已结账','已结账','已结账','已结账','开台','开台','开台','开台','已取消','已取消'];
+        let html = '';
+        for (let i = 0; i < 30; i++) {
+            const orderNo = 'CY20260822' + String(i+1).padStart(3,'0');
+            const table = tables[i % tables.length];
+            const hour = 10 + Math.floor(Math.random()*12);
+            const min = Math.floor(Math.random()*60);
+            const time = `2026-08-22 ${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+            const amount = (500 + Math.random()*4500).toFixed(2);
+            const status = statuses[i % statuses.length];
+            let ops = '';
+            if (status === '开台') ops = `<a href="#" class="text-primary mr-3">加菜</a><a href="#" class="text-success">结账</a>`;
+            else if (status === '已结账') ops = `<a href="#" class="text-primary">查看详情</a>`;
+            else ops = `<a href="#" class="text-primary">查看详情</a>`;
+            const statusClass = status === '开台' ? 'text-warning' : status === '已结账' ? 'text-success' : 'text-danger';
+            html += `<tr>
+                <td class="border py-2 px-2">${orderNo}</td>
+                <td class="border py-2 px-2">${table}</td>
+                <td class="border py-2 px-2">${time}</td>
+                <td class="border py-2 px-2">¥${amount}</td>
+                <td class="border py-2 px-2 ${statusClass}">${status}</td>
+                <td class="border py-2 px-2">${ops}</td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+    }
+
+    // 3.3 订单列表 - 46条数据，客户名称真实名称
+    function fillOrderList() {
+        const tbody = document.getElementById('orderListTbody');
+        if (!tbody) return;
+        const names = ['张伟','王芳','李娜','刘强','陈静','杨洋','赵磊','黄敏','周杰','吴倩','徐浩','孙丽','马超','朱琳','胡军','郭婷','何平','林峰','罗刚','郑爽','梁宇','谢楠','韩雪','唐磊','曹阳','许晴','邓超','冯坤','彭丹','蒋欣','蔡明','贾玲','田亮','董洁','潘长江','向华','汪涵','任嘉伦','姚明','范冰冰','邹市明','苏炳添','石磊','金晨','魏晨','付辛博'];
+        const types = ['住宿','餐饮','其他消费'];
+        const payStatuses = ['已支付','已支付','已支付','已支付','待支付','已退款'];
+        let html = '';
+        for (let i = 0; i < 46; i++) {
+            const orderNo = 'DD20260822' + String(i+1).padStart(3,'0');
+            const type = types[i % 3];
+            const name = names[i % names.length];
+            const hour = 8 + Math.floor(Math.random()*14);
+            const min = Math.floor(Math.random()*60);
+            const time = `2026-08-22 ${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+            let amount;
+            if (type === '住宿') amount = (200 + Math.random()*500).toFixed(2);
+            else if (type === '餐饮') amount = (500 + Math.random()*3000).toFixed(2);
+            else amount = (100 + Math.random()*1000).toFixed(2);
+            const payStatus = payStatuses[i % payStatuses.length];
+            const statusClass = payStatus === '已支付' ? 'text-success' : payStatus === '待支付' ? 'text-warning' : 'text-danger';
+            html += `<tr>
+                <td class="border py-2 px-2">${orderNo}</td>
+                <td class="border py-2 px-2">${type}</td>
+                <td class="border py-2 px-2">${name}</td>
+                <td class="border py-2 px-2">${time}</td>
+                <td class="border py-2 px-2">¥${amount}</td>
+                <td class="border py-2 px-2 ${statusClass}">${payStatus}</td>
+                <td class="border py-2 px-2"><a href="#" class="text-primary">详情</a></td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+    }
+
+    // 3.4 客房管理 - 70条数据
+    function fillRoomConfig() {
+        const tbody = document.getElementById('roomConfigTbody');
+        if (!tbody) return;
+        const statuses = ['空闲','空闲','空闲','空闲','已入住','已入住','已入住','预定','预定','维修'];
+        let html = '';
+        for (let floor = 2; floor <= 8; floor++) {
+            for (let room = 1; room <= 10; room++) {
+                const roomNo = floor * 100 + room; // 201,202...
+                let roomType, price;
+                if (floor <= 3) { roomType = '标准双人间'; price = '268.00'; }
+                else if (floor <= 5) { roomType = '标准单间'; price = '208.00'; }
+                else if (floor <= 7) { roomType = '豪华套房'; price = '588.00'; }
+                else { roomType = '钟点房'; price = '128.00'; }
+                const status = statuses[(floor * 10 + room) % statuses.length];
+                const statusClass = status === '已入住' ? 'text-success' : status === '空闲' ? '' : status === '预定' ? 'text-warning' : 'text-danger';
+                html += `<tr>
+                    <td class="border py-2 px-2">${roomNo}</td>
+                    <td class="border py-2 px-2">${floor}楼</td>
+                    <td class="border py-2 px-2">${roomType}</td>
+                    <td class="border py-2 px-2">¥${price}</td>
+                    <td class="border py-2 px-2 ${statusClass}">${status}</td>
+                    <td class="border py-2 px-2"><a href="#" class="text-primary mr-3">编辑</a><a href="#" class="text-danger">停用</a></td>
+                </tr>`;
+            }
+        }
+        tbody.innerHTML = html;
+    }
+
+    // 3.5 菜品管理 - 77条数据
+    function fillFoodConfig() {
+        const tbody = document.getElementById('foodConfigTbody');
+        if (!tbody) return;
+        const hotDishes = ['鱼香肉丝','宫保鸡丁','麻婆豆腐','回锅肉','辣子鸡','红烧肉','糖醋里脊','水煮鱼','酸菜鱼','毛血旺','干煸豆角','地三鲜','西红柿炒蛋','青椒肉丝','土豆丝','京酱肉丝','鱼香茄子','蚂蚁上树','锅包肉','木须肉','溜肝尖','爆炒腰花','酱爆鸡丁','葱爆羊肉','孜然牛肉','清蒸鲈鱼','红烧排骨','糖醋排骨','梅菜扣肉','剁椒鱼头'];
+        const coldDishes = ['凉拌黄瓜','凉拌木耳','凉拌海带丝','凉拌豆腐丝','夫妻肺片','口水鸡','蒜泥白肉','皮蛋豆腐','拍黄瓜','凉拌金针菇','凉拌菠菜','红油肚丝','凉拌牛肉','凉拌藕片'];
+        const drinks = ['可乐','雪碧','橙汁','苹果汁','矿泉水','啤酒','红酒','白酒','酸奶','椰汁','王老吉','加多宝','酸梅汤','柠檬水','奶茶','咖啡'];
+        const staples = ['米饭','蛋炒饭','扬州炒饭','炒面','炒河粉','汤面','牛肉面','炸酱面','饺子','包子','馒头','花卷','油条','粥'];
+        const soups = ['紫菜蛋花汤','西红柿鸡蛋汤','酸辣汤','玉米排骨汤','冬瓜汤','鸡汤','鱼头豆腐汤'];
+        
+        const allItems = [];
+        hotDishes.forEach(name => allItems.push({name, category:'热菜'}));
+        coldDishes.forEach(name => allItems.push({name, category:'凉菜'}));
+        drinks.forEach(name => allItems.push({name, category:'酒水饮料'}));
+        staples.forEach(name => allItems.push({name, category:'主食'}));
+        soups.forEach(name => allItems.push({name, category:'汤类'}));
+        
+        // 截取前77个
+        const items = allItems.slice(0, 77);
+        let html = '';
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            let price;
+            if (item.category === '热菜') price = (30 + Math.random()*100).toFixed(2);
+            else if (item.category === '凉菜') price = (15 + Math.random()*30).toFixed(2);
+            else if (item.category === '酒水饮料') price = (5 + Math.random()*50).toFixed(2);
+            else if (item.category === '主食') price = (5 + Math.random()*30).toFixed(2);
+            else price = (15 + Math.random()*60).toFixed(2);
+            const status = i < 70 ? '上架' : '下架'; // 前70上架，后7下架
+            const statusClass = status === '上架' ? 'text-success' : 'text-warning';
+            const action = status === '上架' ? '<a href="#" class="text-warning">下架</a>' : '<a href="#" class="text-success">上架</a>';
+            html += `<tr>
+                <td class="border py-2 px-2">${item.name}</td>
+                <td class="border py-2 px-2">${item.category}</td>
+                <td class="border py-2 px-2">¥${price}</td>
+                <td class="border py-2 px-2 ${statusClass}">${status}</td>
+                <td class="border py-2 px-2"><a href="#" class="text-primary mr-3">编辑</a>${action}</td>
+            </tr>`;
+        }
+        tbody.innerHTML = html;
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        switchPage('report');
+        document.getElementById('btnQuery').addEventListener('click', queryReport);
+        document.getElementById('btnExport').addEventListener('click', exportExcel);
+        queryReport();
+        // 填充各管理表格
+        fillRoomManage();
+        fillFoodManage();
+        fillOrderList();
+        fillRoomConfig();
+        fillFoodConfig();
+        // 原initChart可能因dashboard删除而无法执行，此处注释掉
+        // initChart();
+    });
+</script>
+</body>
 </html>
